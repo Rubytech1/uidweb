@@ -59,39 +59,20 @@ export default function HeroSection() {
         </div>
 
         {/* Headline */}
-        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(40px, 7vw, 88px)', fontWeight: 500, lineHeight: 1.08, letterSpacing: '0.01em', textTransform: 'uppercase', marginBottom: 0 }}>
-          <div className="fade-up" style={{ animationDelay: '0.22s', display: 'block' }}>
-            <span style={{ color: 'var(--uid-navy)' }}>{t.hero.line1a} </span>
-            <span style={{ color: 'var(--uid-navy)' }}>{t.hero.line1b}</span>
-          </div>
-          <div className="fade-up" style={{ animationDelay: '0.36s', display: 'block', marginTop: '0.05em' }}>
-            <span style={{ color: 'var(--uid-navy)' }}>{t.hero.line2a} </span>
-            <em style={{ color: 'var(--uid-teal)', fontStyle: 'italic', fontWeight: 400, textTransform: 'none' }}>{t.hero.line2b}</em>
-          </div>
+        <h1 className="fade-up" style={{ animationDelay: '0.22s', fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(36px, 5.5vw, 72px)', fontWeight: 500, lineHeight: 1.12, letterSpacing: '0.01em', color: 'var(--uid-navy)', marginBottom: 0 }}>
+          {t.hero.headline}
         </h1>
 
-        {/* Tagline */}
-        <div className="fade-up" style={{ animationDelay: '0.5s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', margin: '1.5rem auto 0' }}>
-          <div style={{ width: '28px', height: '1px', background: 'rgba(62,200,200,0.5)', flexShrink: 0 }} />
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(14px, 1.8vw, 18px)', fontWeight: 400, fontStyle: 'italic', color: 'var(--text-mid)', letterSpacing: '0.02em', margin: 0 }}>
-            {t.hero.tagline}
-          </p>
-          <div style={{ width: '28px', height: '1px', background: 'rgba(62,200,200,0.5)', flexShrink: 0 }} />
-        </div>
-
         {/* Divider */}
-        <div className="fade-up" style={{ animationDelay: '0.6s', width: '56px', height: '2px', background: 'linear-gradient(90deg, var(--uid-teal), var(--uid-navy))', borderRadius: '99px', margin: '2rem auto' }} />
+        <div className="fade-up" style={{ animationDelay: '0.4s', width: '56px', height: '2px', background: 'linear-gradient(90deg, var(--uid-teal), var(--uid-navy))', borderRadius: '99px', margin: '2rem auto' }} />
 
         {/* Description */}
-        <p className="fade-up" style={{ animationDelay: '0.68s', fontFamily: "'DM Sans', sans-serif", fontSize: '16px', fontWeight: 300, color: 'var(--text-mid)', lineHeight: 1.9, maxWidth: '660px', margin: '0 auto 0.85rem' }}>
+        <p className="fade-up" style={{ animationDelay: '0.52s', fontFamily: "'DM Sans', sans-serif", fontSize: '16px', fontWeight: 300, color: 'var(--text-mid)', lineHeight: 1.9, maxWidth: '660px', margin: '0 auto 2.5rem' }}>
           {t.hero.subtitle}
-        </p>
-        <p className="fade-up" style={{ animationDelay: '0.76s', fontFamily: "'DM Sans', sans-serif", fontSize: '15.5px', fontWeight: 300, color: 'var(--text-soft)', lineHeight: 1.9, maxWidth: '620px', margin: '0 auto 2.5rem' }}>
-          {t.hero.subtitle2}
         </p>
 
         {/* CTAs */}
-        <div className="fade-up hero-ctas" style={{ animationDelay: '0.88s', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div className="fade-up hero-ctas" style={{ animationDelay: '0.68s', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button
             className="shimmer-btn"
             onClick={() => document.getElementById('uye')?.scrollIntoView({ behavior: 'smooth' })}
@@ -112,7 +93,7 @@ export default function HeroSection() {
         </div>
 
         {/* Stats row */}
-        <div className="fade-up" style={{ animationDelay: '1s', display: 'flex', gap: '2.5rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '2.5rem', paddingTop: '2rem', borderTop: '1px solid rgba(13,77,124,0.08)' }}>
+        <div className="fade-up" style={{ animationDelay: '0.82s', display: 'flex', gap: '2.5rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '2.5rem', paddingTop: '2rem', borderTop: '1px solid rgba(13,77,124,0.08)' }}>
           {[{ num: '500+', label: 'Üye / Members' }, { num: '50+', label: 'Etkinlik / Events' }, { num: '10+', label: 'Yıl / Years' }].map(({ num, label }) => (
             <div key={num} style={{ textAlign: 'center' }}>
               <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '28px', fontWeight: 500, color: 'var(--uid-navy)', margin: 0, lineHeight: 1 }}>{num}</p>
