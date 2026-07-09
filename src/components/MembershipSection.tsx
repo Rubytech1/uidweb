@@ -2,12 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import { Check, Users } from 'lucide-react';
 import { useLang } from '../context/LangContext';
 import { RosetteWatermark } from './BackgroundDecor';
+import { PricingTab } from './ui/pricing-tab';
 
 export default function MembershipSection() {
   const { t, lang } = useLang();
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [yearly, setYearly] = useState(false);
+
+  const monthlyLabel = lang === 'TR' ? 'Aylık' : 'Monthly';
+  const yearlyLabel = lang === 'TR' ? 'Yıllık' : 'Yearly';
+  const selected = yearly ? yearlyLabel : monthlyLabel;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -19,7 +24,6 @@ export default function MembershipSection() {
   }, []);
 
   const plan = yearly ? t.membership.yearly : t.membership.monthly;
-  const savingsLabel = lang === 'TR' ? '2 ay ücretsiz' : '2 months free';
 
   return (
     <section id="uye" className="section-pad" style={{ padding: '7rem 2rem', background: 'var(--off-white)', position: 'relative', overflow: 'hidden' }}>
@@ -44,34 +48,20 @@ export default function MembershipSection() {
           </p>
         </div>
 
-        {/* Toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px', marginBottom: '2.5rem' }}>
-          <span style={{ fontSize: '13.5px', fontWeight: yearly ? 300 : 600, color: yearly ? 'var(--text-soft)' : 'var(--uid-navy)', transition: 'all 0.3s' }}>
-            {lang === 'TR' ? 'Aylık' : 'Monthly'}
-          </span>
-          <button
-            onClick={() => setYearly(v => !v)}
-            style={{
-              width: '52px', height: '28px', borderRadius: '99px', border: 'none', cursor: 'pointer', position: 'relative', padding: 0,
-              background: yearly ? 'linear-gradient(135deg, var(--uid-teal), var(--uid-mid))' : 'rgba(13,77,124,0.15)',
-              transition: 'background 0.35s',
-            }}
-          >
-            <span style={{
-              position: 'absolute', top: '4px', left: yearly ? '28px' : '4px',
-              width: '20px', height: '20px', borderRadius: '50%', background: '#fff',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.18)',
-              transition: 'left 0.35s cubic-bezier(0.4,0,0.2,1)',
-            }} />
-          </button>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ fontSize: '13.5px', fontWeight: yearly ? 600 : 300, color: yearly ? 'var(--uid-navy)' : 'var(--text-soft)', transition: 'all 0.3s' }}>
-              {lang === 'TR' ? 'Yıllık' : 'Yearly'}
-            </span>
-            <span style={{ fontSize: '10px', fontWeight: 600, background: 'rgba(62,200,200,0.14)', color: 'var(--uid-teal)', border: '1px solid rgba(62,200,200,0.3)', borderRadius: '99px', padding: '2px 8px', letterSpacing: '0.3px', opacity: yearly ? 1 : 0, transition: 'opacity 0.3s' }}>
-              {savingsLabel}
-            </span>
-          </span>
+        {/* Tab toggle */}
+        <div className="flex justify-center mb-10">
+          <div className="flex rounded-full p-1" style={{ background: 'rgba(13,77,124,0.08)' }}>
+            <PricingTab
+              text={monthlyLabel}
+              selected={selected === monthlyLabel}
+              setSelected={v => setYearly(v === yearlyLabel)}
+            />
+            <PricingTab
+              text={yearlyLabel}
+              selected={selected === yearlyLabel}
+              setSelected={v => setYearly(v === yearlyLabel)}
+            />
+          </div>
         </div>
 
         {/* Card */}
@@ -96,19 +86,17 @@ export default function MembershipSection() {
             <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(62,200,200,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Users size={16} style={{ color: 'var(--uid-teal)' }} />
             </div>
-            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '13px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)', margin: 0, transition: 'all 0.3s' }}>
+            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '13px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)', margin: 0 }}>
               {plan.name}
             </p>
           </div>
 
           {/* Price */}
           <div style={{ marginBottom: '1.75rem' }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '72px', fontWeight: 400, color: '#fff', lineHeight: 1, letterSpacing: '-2px', transition: 'all 0.3s' }}>
-                {plan.price}
-              </span>
-            </div>
-            <p style={{ fontSize: '13px', fontWeight: 300, color: 'rgba(255,255,255,0.55)', margin: '4px 0 0', transition: 'all 0.3s' }}>
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '72px', fontWeight: 400, color: '#fff', lineHeight: 1, letterSpacing: '-2px' }}>
+              {plan.price}
+            </span>
+            <p style={{ fontSize: '13px', fontWeight: 300, color: 'rgba(255,255,255,0.55)', margin: '4px 0 0' }}>
               {plan.period}
             </p>
           </div>
