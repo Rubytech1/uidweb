@@ -92,15 +92,6 @@ export default function HeroSection() {
           </button>
         </div>
 
-        {/* Stats row */}
-        <div className="fade-up" style={{ animationDelay: '0.82s', display: 'flex', gap: '2.5rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '2.5rem', paddingTop: '2rem', borderTop: '1px solid rgba(13,77,124,0.08)' }}>
-          {[{ num: '500+', label: 'Üye / Members' }, { num: '50+', label: 'Etkinlik / Events' }, { num: '10+', label: 'Yıl / Years' }].map(({ num, label }) => (
-            <div key={num} style={{ textAlign: 'center' }}>
-              <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '28px', fontWeight: 500, color: 'var(--uid-navy)', margin: 0, lineHeight: 1 }}>{num}</p>
-              <p style={{ fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--text-soft)', margin: '5px 0 0', fontWeight: 400 }}>{label}</p>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Scroll indicator */}
