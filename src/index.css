@@ -344,6 +344,38 @@ body {
   50%       { transform: translateY(-18px); }
 }
 
+/* ── FAQ ACCORDION ── */
+.faq-item-enter {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.faq-item-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+/* ── PRICING CARD HOVER ── */
+.pricing-card {
+  transition: transform 0.35s ease-out, box-shadow 0.35s ease-out;
+}
+.pricing-card:hover {
+  transform: translateY(-6px);
+}
+
+/* ── STATS BAR ── */
+.hero-stats-bar {
+  display: flex;
+  gap: 2.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+@media (max-width: 480px) {
+  .hero-stats-bar {
+    gap: 1.5rem;
+  }
+}
+
 /* ── MOBILE RESPONSIVE ── */
 
 /* Section padding */
