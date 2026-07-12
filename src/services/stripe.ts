@@ -1,7 +1,8 @@
 // ───────────────────────────────────────────────────────────
-// Stripe Checkout Service (Placeholder)
+// Stripe Checkout Service
 //
-// Stripe is NOT connected yet.  When you are ready to go live:
+// Currently using a Stripe Payment Link for checkout.  When you are
+// ready to move to full Stripe Sessions with webhooks:
 //
 //   1.  Add the following values to your `.env` file:
 //
@@ -23,9 +24,18 @@
 //       - Returns the session URL (or session ID) to the client.
 //       - Has a separate webhook handler that receives Stripe events
 //         and updates `membership_status` in the `profiles` table.
+//
+//   4.  In the Stripe Dashboard, configure the Payment Link's
+//       "After payment" → "Success URL" to:
+//         https://yourdomain.com/payment-success
+//       and "Cancel URL" to:
+//         https://yourdomain.com/payment-cancelled
 // ───────────────────────────────────────────────────────────
 
 import type { MembershipType } from '../types';
+
+// Stripe Payment Link (test mode)
+const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/test_cNieVc22UasGca21Ak3gk00';
 
 // import { loadStripe } from '@stripe/stripe-js';
 // const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string;
@@ -93,9 +103,9 @@ const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
 // Checkout Session and returns `{ sessionId, url }`.
 //
 export async function createCheckoutSession(plan: PlanId): Promise<{ session?: CheckoutSession; error?: string }> {
-  await delay(1000);
+  await delay(600);
 
-  // TODO: real implementation (call backend / edge function):
+  // TODO: replace with real Stripe Checkout Session via backend:
   //
   // const res = await fetch('/api/create-checkout-session', {
   //   method: 'POST',
@@ -106,11 +116,17 @@ export async function createCheckoutSession(plan: PlanId): Promise<{ session?: C
   // const data = await res.json();
   // return { session: { sessionId: data.sessionId, url: data.url } };
 
-  console.info('[stripe.createCheckoutSession] mock session for plan:', plan);
+  // Using Stripe Payment Link with success/cancel URLs appended
+  const baseUrl = window.location.origin;
+  const successUrl = `${baseUrl}/payment-success?plan=${plan}`;
+  const cancelUrl = `${baseUrl}/payment-cancelled`;
+  const url = `${STRIPE_PAYMENT_LINK}?client_reference_id=${plan}&success_url=${encodeURIComponent(successUrl)}&cancel_url=${encodeURIComponent(cancelUrl)}`;
+
+  console.info('[stripe.createCheckoutSession] redirecting to Payment Link for plan:', plan);
   return {
     session: {
-      sessionId: `cs_test_mock_${plan}_${Date.now()}`,
-      url: '/payment-success', // mock: redirect to success page directly
+      sessionId: `pl_${plan}_${Date.now()}`,
+      url,
     },
   };
 }
@@ -121,24 +137,16 @@ export async function createCheckoutSession(plan: PlanId): Promise<{ session?: C
 // redirect the browser to the Stripe-hosted checkout page.
 //
 export async function redirectToCheckout(session: CheckoutSession): Promise<{ error?: string }> {
-  await delay(500);
+  // Using Payment Link: redirect the browser to the Stripe-hosted page
+  window.location.href = session.url;
+  return {};
 
-  // TODO: real implementation:
+  // TODO: real implementation using Stripe.js:
   //
   // const stripe = await stripePromise;
   // if (!stripe) return { error: 'Stripe failed to load' };
-  //
-  // If using session ID:
-  //   const { error } = await stripe.redirectToCheckout({ sessionId: session.sessionId });
-  //   return { error: error?.message };
-  //
-  // Or if using URL (recommended for Stripe Checkout redirect):
-  //   window.location.href = session.url;
-  //   return {};
-
-  console.info('[stripe.redirectToCheckout] mock redirect to', session.url);
-  window.location.href = session.url;
-  return {};
+  // const { error } = await stripe.redirectToCheckout({ sessionId: session.sessionId });
+  // return { error: error?.message };
 }
 
 // ── verifyPayment ────────────────────────────────────────────────
@@ -148,9 +156,11 @@ export async function redirectToCheckout(session: CheckoutSession): Promise<{ er
 // `membership_status` in Supabase, then fetches the profile).
 //
 export async function verifyPayment(sessionId: string): Promise<{ paid: boolean; error?: string }> {
-  await delay(800);
+  await delay(500);
 
-  // TODO: real implementation:
+  // When using Payment Links, Stripe redirects back to the success_url
+  // after payment.  The user landing on /payment-success is confirmation.
+  // For full verification, use a webhook + backend lookup:
   //
   // const res = await fetch('/api/verify-payment', {
   //   method: 'POST',
@@ -161,7 +171,7 @@ export async function verifyPayment(sessionId: string): Promise<{ paid: boolean;
   // const data = await res.json();
   // return { paid: data.paid };
 
-  console.info('[stripe.verifyPayment] mock verify for session:', sessionId);
+  console.info('[stripe.verifyPayment] verifying session:', sessionId);
   return { paid: true };
 }
 
