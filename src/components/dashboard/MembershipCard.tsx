@@ -6,13 +6,6 @@ interface MembershipCardProps {
   user: Profile;
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  student: 'Student',
-  individual: 'Individual',
-  family: 'Family',
-  lifetime: 'Lifetime',
-};
-
 export default function MembershipCard({ user }: MembershipCardProps) {
   const renewal = user.renewal_date
     ? new Date(user.renewal_date).toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' })
@@ -68,8 +61,8 @@ export default function MembershipCard({ user }: MembershipCardProps) {
           <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.9)', fontWeight: 400, margin: 0, fontFamily: "'DM Sans', sans-serif" }}>{user.id}</p>
         </div>
         <div>
-          <p style={{ fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontWeight: 600, margin: '0 0 4px', fontFamily: "'DM Sans', sans-serif" }}>Type</p>
-          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.9)', fontWeight: 400, margin: 0, fontFamily: "'DM Sans', sans-serif" }}>{TYPE_LABELS[user.membership_type] || user.membership_type}</p>
+          <p style={{ fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontWeight: 600, margin: '0 0 4px', fontFamily: "'DM Sans', sans-serif" }}>Status</p>
+          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.9)', fontWeight: 400, margin: 0, textTransform: 'capitalize', fontFamily: "'DM Sans', sans-serif" }}>{user.membership_status}</p>
         </div>
         <div>
           <p style={{ fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontWeight: 600, margin: '0 0 4px', fontFamily: "'DM Sans', sans-serif" }}>Renewal Date</p>
@@ -77,23 +70,6 @@ export default function MembershipCard({ user }: MembershipCardProps) {
             <Calendar size={13} color="var(--uid-teal)" />
             <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.9)', fontWeight: 400, margin: 0, fontFamily: "'DM Sans', sans-serif" }}>{renewal}</p>
           </div>
-        </div>
-        <div>
-          <p style={{ fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontWeight: 600, margin: '0 0 4px', fontFamily: "'DM Sans', sans-serif" }}>Status</p>
-          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.9)', fontWeight: 400, margin: 0, textTransform: 'capitalize', fontFamily: "'DM Sans', sans-serif" }}>{user.membership_status}</p>
-        </div>
-      </div>
-
-      {/* Divider */}
-      <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)', marginBottom: '1.25rem' }} />
-
-      {/* Discount code */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div>
-          <p style={{ fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontWeight: 600, margin: '0 0 4px', fontFamily: "'DM Sans', sans-serif" }}>Discount Code</p>
-          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '20px', fontWeight: 600, letterSpacing: '1px', color: 'var(--uid-teal)', margin: 0 }}>
-            {user.discount_code || '—'}
-          </p>
         </div>
       </div>
     </motion.div>

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CheckCircle2, LayoutDashboard, CalendarDays, Sparkles } from 'lucide-react';
+import { CheckCircle2, LayoutDashboard } from 'lucide-react';
 import { UIDLogo } from '../components/UIDLogo';
 import { verifyPayment, activateMembership, type PlanId } from '../services/stripe';
 import { useAuth } from '../context/AuthContext';
@@ -14,21 +14,22 @@ export default function PaymentSuccess() {
   const plan = (params.get('plan') as PlanId) || 'monthly';
 
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
     (async () => {
-      // Verify the payment (mock: always succeeds)
       const { paid } = await verifyPayment(sessionId);
       if (!paid) {
         navigate('/payment-cancelled');
         return;
       }
-      // Activate membership (mock: updates local user)
       await activateMembership(plan);
-      // Update local auth context so dashboard unlocks
       const renewalDate = plan === 'annual'
         ? new Date(Date.now() + 365 * 86400000).toISOString()
         : new Date(Date.now() + 30 * 86400000).toISOString();
       await updateProfile({ membership_status: 'active', renewal_date: renewalDate });
+      // Auto-redirect to dashboard after 3 seconds
+      timer = setTimeout(() => navigate('/dashboard'), 3000);
     })();
+    return () => clearTimeout(timer);
   }, [sessionId, plan, navigate, updateProfile]);
 
   return (
@@ -51,11 +52,14 @@ export default function PaymentSuccess() {
         <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '36px', fontWeight: 500, color: 'var(--uid-navy)', margin: '0 0 1rem', lineHeight: 1.2 }}>
           <em>Welcome to UID Toronto{user?.first_name ? `, ${user.first_name}` : ''}!</em>
         </h1>
-        <p style={{ fontSize: '16px', color: 'var(--text-mid)', fontWeight: 300, lineHeight: 1.7, margin: '0 0 2.5rem', fontFamily: "'DM Sans', sans-serif" }}>
+        <p style={{ fontSize: '16px', color: 'var(--text-mid)', fontWeight: 300, lineHeight: 1.7, margin: '0 0 1rem', fontFamily: "'DM Sans', sans-serif" }}>
           Your membership has been activated successfully. You now have full access to all member benefits.
         </p>
+        <p style={{ fontSize: '13px', color: 'var(--text-soft)', fontWeight: 300, margin: '0 0 2.5rem', fontFamily: "'DM Sans', sans-serif" }}>
+          Redirecting you to your dashboard…
+        </p>
 
-        {/* Buttons */}
+        {/* Button */}
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link to="/dashboard" className="shimmer-btn" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '14px 32px', borderRadius: '99px', fontSize: '15px', fontWeight: 500, background: 'linear-gradient(135deg, #0D4D7C, #1A6A9A)', color: '#fff', textDecoration: 'none', fontFamily: "'DM Sans', sans-serif", transition: 'transform 0.3s, box-shadow 0.3s' }}
             onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(13,77,124,0.3)'; }}
@@ -63,17 +67,6 @@ export default function PaymentSuccess() {
             <LayoutDashboard size={17} />
             Go to Dashboard
           </Link>
-          <Link to="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '14px 32px', borderRadius: '99px', fontSize: '15px', fontWeight: 400, background: 'rgba(255,255,255,0.75)', border: '1.5px solid rgba(13,77,124,0.2)', color: 'var(--uid-navy)', textDecoration: 'none', fontFamily: "'DM Sans', sans-serif", transition: 'border-color 0.3s, color 0.3s, transform 0.3s' }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--uid-teal)'; e.currentTarget.style.color = 'var(--uid-teal)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(13,77,124,0.2)'; e.currentTarget.style.color = 'var(--uid-navy)'; e.currentTarget.style.transform = ''; }}>
-            <CalendarDays size={17} />
-            View Upcoming Events
-          </Link>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '2rem', color: 'var(--text-soft)', fontSize: '12px', fontFamily: "'DM Sans', sans-serif" }}>
-          <Sparkles size={13} />
-          <span>A confirmation email has been sent to your inbox</span>
         </div>
       </motion.div>
     </div>

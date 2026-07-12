@@ -5,7 +5,6 @@ import { Lock, CreditCard } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import DashboardNav from '../components/dashboard/DashboardNav';
 import MembershipCard from '../components/dashboard/MembershipCard';
-import DiscountCode from '../components/dashboard/DiscountCode';
 import Benefits from '../components/dashboard/Benefits';
 import EventsList from '../components/dashboard/EventsList';
 import NewsList from '../components/dashboard/NewsList';
@@ -151,7 +150,6 @@ export default function Dashboard() {
           className="dashboard-grid-overview">
           <MembershipCard user={user} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <DiscountCode code={user.discount_code || 'UID-2026-XK7P'} />
             <Benefits />
           </div>
         </div>
