@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Check, Users } from 'lucide-react';
 import { useLang } from '../context/LangContext';
 import { RosetteWatermark } from './BackgroundDecor';
@@ -13,6 +14,7 @@ export default function MembershipSection() {
   const monthlyLabel = lang === 'TR' ? 'Aylık' : 'Monthly';
   const yearlyLabel = lang === 'TR' ? 'Yıllık' : 'Yearly';
   const selected = yearly ? yearlyLabel : monthlyLabel;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -119,6 +121,7 @@ export default function MembershipSection() {
           {/* CTA */}
           <button
             className="shimmer-btn"
+            onClick={() => navigate('/signup')}
             style={{
               width: '100%', padding: '16px', borderRadius: '99px', fontSize: '15px', fontWeight: 500,
               background: 'linear-gradient(135deg, var(--uid-teal), var(--uid-mid))',

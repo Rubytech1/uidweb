@@ -136,7 +136,7 @@ export default function Navbar() {
           </button>
           <button
             className="shimmer-btn"
-            onClick={() => scrollTo('uye')}
+            onClick={() => navigate('/signup')}
             style={{
               padding: '8px 20px', borderRadius: '99px', fontSize: '13.5px', fontWeight: 500,
               background: 'linear-gradient(135deg, #0D4D7C, #1A6A9A)', color: '#fff',
@@ -231,7 +231,7 @@ export default function Navbar() {
         <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(62,200,200,0.15)' }}>
           <button
             className="shimmer-btn"
-            onClick={() => scrollTo('uye')}
+            onClick={() => navigate('/signup')}
             style={{
               width: '100%', padding: '13px', borderRadius: '99px',
               background: 'linear-gradient(135deg, #0D4D7C, #1A6A9A)', color: '#fff',

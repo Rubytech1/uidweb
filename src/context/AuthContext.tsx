@@ -2,18 +2,23 @@ import { createContext, useContext, useState, useEffect, useCallback, type React
 import type { Profile } from '../types';
 import * as authService from '../services/auth';
 
+interface AuthResult {
+  error?: string;
+  user?: Profile | null;
+}
+
 interface AuthContextValue {
   user: Profile | null;
   isAuthenticated: boolean;
-  isLoading: boolean; // initial session check
-  isPending: boolean; // ongoing auth action
+  isLoading: boolean;
+  isPending: boolean;
   error: string | null;
-  signUp: (input: authService.SignUpInput) => Promise<{ error?: string }>;
-  login: (input: authService.LoginInput) => Promise<{ error?: string }>;
+  signUp: (input: authService.SignUpInput) => Promise<AuthResult>;
+  login: (input: authService.LoginInput) => Promise<AuthResult>;
   logout: () => Promise<void>;
-  forgotPassword: (email: string) => Promise<{ error?: string }>;
-  resetPassword: (pw: string) => Promise<{ error?: string }>;
-  updateProfile: (updates: authService.UpdateProfileInput) => Promise<{ error?: string }>;
+  forgotPassword: (email: string) => Promise<AuthResult>;
+  resetPassword: (pw: string) => Promise<AuthResult>;
+  updateProfile: (updates: authService.UpdateProfileInput) => Promise<AuthResult>;
   clearError: () => void;
 }
 
@@ -27,11 +32,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Restore session on mount (mock: localStorage; Supabase: onAuthStateChange)
   useEffect(() => {
     let active = true;
     (async () => {
-      // TODO: replace with `supabase.auth.getSession()` / `getCurrentUser()`
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
@@ -41,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (active && current) setUser(current);
         }
       } catch {
-        /* ignore parse errors */
+        /* ignore */
       } finally {
         if (active) setIsLoading(false);
       }
@@ -54,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     else localStorage.removeItem(STORAGE_KEY);
   };
 
-  const wrap = async (fn: () => Promise<{ user?: Profile | null; error?: string }>) => {
+  const wrap = async (fn: () => Promise<{ user?: Profile | null; error?: string }>): Promise<AuthResult> => {
     setIsPending(true);
     setError(null);
     try {
@@ -66,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (res.user) {
         setUser(res.user);
         persist(res.user);
+        return { user: res.user };
       }
       return {};
     } catch (e) {

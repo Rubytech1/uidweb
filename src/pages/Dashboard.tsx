@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Lock, CreditCard } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import DashboardNav from '../components/dashboard/DashboardNav';
 import MembershipCard from '../components/dashboard/MembershipCard';
@@ -60,7 +62,10 @@ type Section = 'overview' | 'events' | 'news' | 'profile';
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [section, setSection] = useState<Section>('overview');
+
+  const isMemberActive = user?.membership_status === 'active';
 
   // Smooth scroll to section when nav is used
   useEffect(() => {
@@ -90,6 +95,56 @@ export default function Dashboard() {
             <em>Hello, {user.first_name}</em>
           </h1>
         </motion.div>
+
+        {/* Payment prompt for pending members */}
+        {!isMemberActive && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            style={{
+              background: 'linear-gradient(160deg, #0D4D7C 0%, #061E30 100%)',
+              borderRadius: '20px',
+              padding: '2rem',
+              marginBottom: '1.5rem',
+              position: 'relative',
+              overflow: 'hidden',
+              boxShadow: '0 16px 48px rgba(13,77,124,0.2)',
+            }}
+          >
+            <div style={{ position: 'absolute', inset: 0, borderRadius: '20px', background: 'linear-gradient(90deg, transparent, rgba(62,200,200,0.1), transparent)', backgroundSize: '300% 100%', animation: 'borderTrace 4s linear infinite', WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', maskComposite: 'exclude', padding: '1.5px', pointerEvents: 'none' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(62,200,200,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Lock size={18} style={{ color: 'var(--uid-teal)' }} />
+              </div>
+              <div>
+                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '16px', fontWeight: 600, color: '#fff', margin: 0 }}>
+                  Complete your membership payment
+                </p>
+                <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.55)', fontWeight: 300, margin: '4px 0 0', fontFamily: "'DM Sans', sans-serif" }}>
+                  to unlock all member benefits
+                </p>
+              </div>
+            </div>
+            <button
+              className="shimmer-btn"
+              onClick={() => navigate('/membership')}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '8px',
+                padding: '12px 28px', borderRadius: '99px', fontSize: '14.5px', fontWeight: 500,
+                fontFamily: "'DM Sans', sans-serif",
+                background: 'linear-gradient(135deg, var(--uid-teal), var(--uid-mid))',
+                color: '#fff', border: 'none', cursor: 'pointer',
+                transition: 'transform 0.3s, box-shadow 0.3s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(62,200,200,0.35)'; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
+            >
+              <CreditCard size={16} />
+              Complete Payment
+            </button>
+          </motion.div>
+        )}
 
         {/* Overview section */}
         <div id="section-overview" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '1.5rem', marginBottom: '1.5rem' }}

@@ -20,8 +20,12 @@ export default function Login() {
     if (!emailOrUsername.trim()) { setLocalError('Please enter your email or username'); return; }
     if (!password) { setLocalError('Please enter your password'); return; }
     if (error) clearError();
-    const { error: err } = await login({ emailOrUsername, password, remember });
-    if (!err) navigate('/dashboard');
+    const { error: err, user } = await login({ emailOrUsername, password, remember });
+    if (!err) {
+      // Redirect based on membership status
+      if (user?.membership_status === 'active') navigate('/dashboard');
+      else navigate('/membership');
+    }
   };
 
   const displayError = localError || error;

@@ -10,6 +10,9 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import Membership from './pages/Membership';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentCancelled from './pages/PaymentCancelled';
 import Dashboard from './pages/Dashboard';
 import AuthGuard from './components/auth/AuthGuard';
 
@@ -22,6 +25,9 @@ function AppRoutes() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/membership" element={<Membership />} />
+      <Route path="/payment-success" element={<PaymentSuccess />} />
+      <Route path="/payment-cancelled" element={<PaymentCancelled />} />
       <Route path="/dashboard" element={<AuthGuard><Dashboard /></AuthGuard>} />
     </Routes>
   );

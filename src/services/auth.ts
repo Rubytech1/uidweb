@@ -20,7 +20,7 @@ const MOCK_USER: Profile = {
   email: 'demo@uid-toronto.ca',
   phone: '+1 (416) 555-0148',
   membership_type: 'individual',
-  membership_status: 'active',
+  membership_status: 'pending',
   renewal_date: '2026-12-31',
   discount_code: 'UID-2026-XK7P',
   avatar_url: null,
@@ -50,6 +50,9 @@ export interface UpdateProfileInput {
   username?: string;
   phone?: string;
   avatar_url?: string;
+  membership_status?: import('../types').MembershipStatus;
+  membership_type?: import('../types').MembershipType;
+  renewal_date?: string | null;
 }
 
 // ── signUp ─────────────────────────────────────────────────────
@@ -72,7 +75,7 @@ export async function signUp(input: SignUpInput): Promise<AuthResult> {
   // return { user: mapToProfile(data.user) };
 
   console.info('[auth.signUp] mock signup for', input.email);
-  return { user: { ...MOCK_USER, first_name: input.first_name, last_name: input.last_name, username: input.username, email: input.email } };
+  return { user: { ...MOCK_USER, first_name: input.first_name, last_name: input.last_name, username: input.username, email: input.email, membership_status: 'pending' } };
 }
 
 // ── login ───────────────────────────────────────────────────────
@@ -88,7 +91,7 @@ export async function login(input: LoginInput): Promise<AuthResult> {
   // return { user: await fetchProfile(data.user.id) };
 
   console.info('[auth.login] mock login for', input.emailOrUsername);
-  return { user: { ...MOCK_USER, email: input.emailOrUsername.includes('@') ? input.emailOrUsername : MOCK_USER.email } };
+  return { user: { ...MOCK_USER, membership_status: 'active', email: input.emailOrUsername.includes('@') ? input.emailOrUsername : MOCK_USER.email } };
 }
 
 // ── logout ──────────────────────────────────────────────────────

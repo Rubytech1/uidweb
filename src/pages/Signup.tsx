@@ -81,7 +81,7 @@ export default function Signup() {
     });
     if (!err) {
       setSuccess(true);
-      setTimeout(() => navigate('/dashboard'), 2200);
+      setTimeout(() => navigate('/membership'), 2200);
     }
   };
 
@@ -106,7 +106,7 @@ export default function Signup() {
             <em>Welcome to UID Toronto!</em>
           </h1>
           <p style={{ fontSize: '15px', color: 'var(--text-mid)', fontWeight: 300, lineHeight: 1.7, margin: '0 0 1.5rem' }}>
-            Your account has been created successfully. Redirecting you to your dashboard…
+            Your account has been created successfully. Redirecting you to membership selection…
           </p>
           <div style={{ width: '180px', height: '3px', background: 'rgba(13,77,124,0.08)', borderRadius: '99px', margin: '0 auto', overflow: 'hidden' }}>
             <motion.div initial={{ x: '-100%' }} animate={{ x: '100%' }} transition={{ duration: 2, ease: 'easeInOut' }} style={{ width: '60%', height: '100%', background: 'linear-gradient(90deg, var(--uid-teal), var(--uid-mid))', borderRadius: '99px' }} />

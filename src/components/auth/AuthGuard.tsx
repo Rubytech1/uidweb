@@ -7,6 +7,8 @@ interface AuthGuardProps {
 }
 
 // Protects /dashboard — redirects to /login when unauthenticated.
+// Authenticated users with pending/expired membership are still
+// allowed through; the Dashboard component renders a payment prompt.
 export default function AuthGuard({ children }: AuthGuardProps) {
   const { isAuthenticated, isLoading } = useAuth();
 
