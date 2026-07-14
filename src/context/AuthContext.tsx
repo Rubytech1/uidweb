@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import type { Profile } from '../types';
 import * as authService from '../services/auth';
+import { supabase } from '../lib/supabase';
 
 interface AuthResult {
   error?: string;
@@ -24,7 +25,24 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-const STORAGE_KEY = 'uid-auth-user';
+function mapSupabaseUser(supaUser: { id: string; email?: string; user_metadata?: Record<string, unknown> }): Profile {
+  const meta = supaUser.user_metadata ?? {};
+  return {
+    id: supaUser.id,
+    first_name: (meta.first_name as string) ?? '',
+    last_name: (meta.last_name as string) ?? '',
+    username: (meta.username as string) ?? supaUser.email?.split('@')[0] ?? '',
+    email: supaUser.email ?? '',
+    phone: (meta.phone as string) ?? null,
+    membership_type: (meta.membership_type as Profile['membership_type']) ?? 'individual',
+    membership_status: (meta.membership_status as Profile['membership_status']) ?? 'pending',
+    renewal_date: (meta.renewal_date as string) ?? null,
+    discount_code: (meta.discount_code as string) ?? null,
+    avatar_url: (meta.avatar_url as string) ?? null,
+    exec_role: (meta.exec_role as Profile['exec_role']) ?? 'member',
+    is_exec: (meta.is_exec as boolean) ?? false,
+  };
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<Profile | null>(null);
@@ -33,29 +51,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let active = true;
-    (async () => {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-          setUser(JSON.parse(stored));
-        } else {
-          const current = await authService.getCurrentUser();
-          if (active && current) setUser(current);
-        }
-      } catch {
-        /* ignore */
-      } finally {
-        if (active) setIsLoading(false);
-      }
-    })();
-    return () => { active = false; };
-  }, []);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) setUser(mapSupabaseUser(session.user));
+      setIsLoading(false);
+    });
 
-  const persist = (u: Profile | null) => {
-    if (u) localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
-    else localStorage.removeItem(STORAGE_KEY);
-  };
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      (async () => {
+        if (session?.user) {
+          setUser(mapSupabaseUser(session.user));
+        } else {
+          setUser(null);
+        }
+        setIsLoading(false);
+      })();
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const wrap = async (fn: () => Promise<{ user?: Profile | null; error?: string }>): Promise<AuthResult> => {
     setIsPending(true);
@@ -66,9 +81,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setError(res.error);
         return { error: res.error };
       }
-      if (res.user) {
-        setUser(res.user);
-        persist(res.user);
+      if (res.user !== undefined) {
+        if (res.user) setUser(res.user);
         return { user: res.user };
       }
       return {};
@@ -95,7 +109,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsPending(true);
     await authService.logout();
     setUser(null);
-    persist(null);
     setIsPending(false);
   }, []);
 

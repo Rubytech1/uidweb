@@ -15,6 +15,53 @@ import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancelled from './pages/PaymentCancelled';
 import Dashboard from './pages/Dashboard';
 import AuthGuard from './components/auth/AuthGuard';
+import ExecGuard from './components/auth/ExecGuard';
+import ExecLayout from './components/exec/ExecLayout';
+
+// Exec Pages
+import ExecHome from './pages/exec/ExecHome';
+import ExecCRM from './pages/exec/ExecCRM';
+import ExecCalendar from './pages/exec/ExecCalendar';
+import ExecPrograms from './pages/exec/ExecPrograms';
+import ExecMeetings from './pages/exec/ExecMeetings';
+import ExecTasks from './pages/exec/ExecTasks';
+import ExecMessages from './pages/exec/ExecMessages';
+import ExecDocuments from './pages/exec/ExecDocuments';
+import ExecFinance from './pages/exec/ExecFinance';
+import ExecAnalytics from './pages/exec/ExecAnalytics';
+import ExecNotifications from './pages/exec/ExecNotifications';
+import ExecCalls from './pages/exec/ExecCalls';
+import ExecVolunteers from './pages/exec/ExecVolunteers';
+import ExecRSVP from './pages/exec/ExecRSVP';
+import ExecMedia from './pages/exec/ExecMedia';
+import ExecSettings from './pages/exec/ExecSettings';
+
+function ExecDashboardRoutes() {
+  return (
+    <ExecGuard>
+      <ExecLayout>
+        <Routes>
+          <Route index element={<ExecHome />} />
+          <Route path="crm" element={<ExecCRM />} />
+          <Route path="calendar" element={<ExecCalendar />} />
+          <Route path="programs" element={<ExecPrograms />} />
+          <Route path="meetings" element={<ExecMeetings />} />
+          <Route path="tasks" element={<ExecTasks />} />
+          <Route path="messages" element={<ExecMessages />} />
+          <Route path="documents" element={<ExecDocuments />} />
+          <Route path="finance" element={<ExecFinance />} />
+          <Route path="analytics" element={<ExecAnalytics />} />
+          <Route path="notifications" element={<ExecNotifications />} />
+          <Route path="calls" element={<ExecCalls />} />
+          <Route path="volunteers" element={<ExecVolunteers />} />
+          <Route path="rsvp" element={<ExecRSVP />} />
+          <Route path="media" element={<ExecMedia />} />
+          <Route path="settings" element={<ExecSettings />} />
+        </Routes>
+      </ExecLayout>
+    </ExecGuard>
+  );
+}
 
 function AppRoutes() {
   return (
@@ -29,6 +76,7 @@ function AppRoutes() {
       <Route path="/payment-success" element={<PaymentSuccess />} />
       <Route path="/payment-cancelled" element={<PaymentCancelled />} />
       <Route path="/dashboard" element={<AuthGuard><Dashboard /></AuthGuard>} />
+      <Route path="/exec/*" element={<AuthGuard><ExecDashboardRoutes /></AuthGuard>} />
     </Routes>
   );
 }

@@ -1,15 +1,18 @@
 import { Link } from 'react-router-dom';
 import { UIDLogo } from '../UIDLogo';
 import { useAuth } from '../../context/AuthContext';
-import { LogOut, User, Calendar, Newspaper, Sparkles } from 'lucide-react';
+import { LogOut, User, Calendar, Newspaper, Sparkles, Shield } from 'lucide-react';
 
 interface DashboardNavProps {
   active: string;
   onNavigate: (section: string) => void;
 }
 
+const EXEC_ROLES = ['admin', 'regional_president', 'executive', 'youth_branch', 'womens_branch', 'volunteer_coordinator', 'media_team', 'finance_team'];
+
 export default function DashboardNav({ active, onNavigate }: DashboardNavProps) {
   const { user, logout } = useAuth();
+  const isExec = user?.is_exec || EXEC_ROLES.includes(user?.exec_role ?? '');
 
   const items = [
     { key: 'overview', label: 'Overview', icon: Sparkles },
@@ -48,6 +51,23 @@ export default function DashboardNav({ active, onNavigate }: DashboardNavProps) 
 
       {/* Right */}
       <div className="hidden md:flex" style={{ gap: '0.75rem', alignItems: 'center' }}>
+        {isExec && (
+          <Link
+            to="/exec"
+            style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              padding: '7px 14px', borderRadius: '99px', fontSize: '13px', fontWeight: 500,
+              background: 'rgba(13,77,124,0.08)', color: '#0D4D7C',
+              border: '1.5px solid rgba(13,77,124,0.15)', textDecoration: 'none',
+              fontFamily: "'DM Sans', sans-serif", transition: 'all 0.2s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(13,77,124,0.14)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(13,77,124,0.08)'; }}
+          >
+            <Shield size={13} />
+            Exec Board
+          </Link>
+        )}
         <span style={{ fontSize: '13px', color: 'var(--text-mid)', fontFamily: "'DM Sans', sans-serif" }}>
           {user?.first_name}
         </span>
